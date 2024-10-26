@@ -1,74 +1,19 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend/react-app:/app
-      - /app/node_modules
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    depends_on:
-      - fastapi1
-      - fastapi2
-      - nodejs-api
-
-  fastapi1:
-    build:
-      context: ./services/fastapi-service1
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./services/fastapi-service1:/app
-    environment:
-      - DATABASE_URL=mysql://user:password@db:3306/dbname
-    depends_on:
-      - db
-
-  fastapi2:
-    build:
-      context: ./services/fastapi-service2
-      dockerfile: Dockerfile
-    ports:
-      - "8001:8000"
-    volumes:
-      - ./services/fastapi-service2:/app
-    environment:
-      - DATABASE_URL=mysql://user:password@db:3306/dbname
-    depends_on:
-      - db
-
-  nodejs-api:
-    build:
-      context: ./services/nodejs-service
-      dockerfile: Dockerfile
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./services/nodejs-service:/app
-      - /app/node_modules
-    environment:
-      - DATABASE_URL=mysql://user:password@db:3306/dbname
-    depends_on:
-      - db
-
-  db:
+  mysql-db:
     image: mysql:8.0
-    ports:
-      - "3306:3306"
+    container_name: mysql-db
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=dbname
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3306:3306"  # Expose MySQL on local port 3306 for external access
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql  # Persists MySQL data
 
 volumes:
-  mysql_data:
+  mysql-data:
+    driver: local
