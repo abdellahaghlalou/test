@@ -1,3 +1,7 @@
 fastapi
 uvicorn
 python-dotenv
+tortoise-orm
+httpx
+cryptography
+aiomysql

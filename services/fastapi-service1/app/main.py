@@ -9,6 +9,7 @@ app = FastAPI()
 
 # Pydantic models for request/response validation
 class ClientSchema(BaseModel):
+    client_id:int
     name: str
     email: str
     phone: str = None
@@ -23,6 +24,16 @@ class FactureSchema(BaseModel):
     due_date: str
     total_amount: float
     status: str = "Unpaid"
+
+    @classmethod
+    def from_orm(cls, obj):
+        return cls(
+            client_id=obj.client_id,
+            invoice_date=obj.invoice_date.isoformat(),  # Convert date to string
+            due_date=obj.due_date.isoformat(),          # Convert date to string
+            total_amount=obj.total_amount,
+            status=obj.status,
+        )
 
 # CRUD for Clients
 @app.post("/clients/", response_model=ClientSchema)
@@ -49,7 +60,9 @@ async def create_facture(facture: FactureSchema):
 
 @app.get("/factures/", response_model=List[FactureSchema])
 async def get_factures():
-    return await Facture.all()
+    factures = await Facture.all().prefetch_related("client")  # Preload client if needed
+    return [FactureSchema.from_orm(facture) for facture in factures]
+
 
 @app.get("/factures/{facture_id}", response_model=FactureSchema, responses={404: {"model": HTTPNotFoundError}})
 async def get_facture(facture_id: int):
