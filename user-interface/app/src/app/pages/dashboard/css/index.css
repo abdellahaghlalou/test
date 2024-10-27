@@ -1,0 +1,14 @@
+/* Dashboard Styles */
+
+.dashboard-container {
+    margin: 6px;
+    padding: 8px;
+    border: 1px solid gray;
+}
+
+.dashboard-container > h1 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: darkslategray;
+    text-align: left;
+}
