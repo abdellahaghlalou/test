@@ -33,24 +33,13 @@ function transform_integration_api_response(data) {
 const get_all_cities_outtandings = async () => {
 
     // Get the outstandig of all cties from the integration API
-    const response = await axios.get('localhost:8001/unpaid-invoices-count-by-city');
+    const response = await axios.get('http://localhost:8001/unpaid-invoices-count-by-city');
 
-    return transform_integration_api_response(response);
+    return transform_integration_api_response(response.data);
 
 };
 
 
 module.exports = {
     get_all_cities_outtandings
-}
-
-
-async function get_all_cities_outstandings() {
-    try {
-         // Replace with your API URL
-        return response.data; // Adjust based on the structure of your API response
-    } catch (error) {
-        console.error('Error fetching data from API:', error);
-        throw new Error('Failed to fetch outstanding data');
-    }
 }
